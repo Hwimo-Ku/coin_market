@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Coin Trading Marketplace - Buy Coins</title>
+  </head>
+  <body>
+    <h1>Buy Coins</h1>
+    <p>Current coin price: <span id="current-price"></span></p>
+    <p>Number of available coins: <span id="available-coins"></span></p>
+    <form action="/buy" method="POST">
+      <label for="num-coins">Number of coins to buy:</label>
+      <input type="number" id="num-coins" name="num_coins" min="1" max="100" required>
+      <button type="submit">Buy Coins</button>
+    </form>
+  </body>
+</html>

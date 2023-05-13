@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Coin Trading Marketplace</title>
+  </head>
+  <body>
+    <h1>Welcome to the Coin Trading Marketplace</h1>
+    <p>Current coin price: <span id="current-price"></span></p>
+    <p>Number of available coins: <span id="available-coins"></span></p>
+    
+    <h2>Sign Up or Sign In</h2>
+    <form action="/signup" method="POST">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+      <button type="submit">Sign Up</button>
+    </form>
+    
+    <form action="/signin" method="POST">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+      <button type="submit">Sign In</button>
+    </form>
+  </body>
+</html>
