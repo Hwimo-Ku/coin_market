@@ -2,28 +2,35 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
     <title>Coin Trading Marketplace</title>
   </head>
   <body>
+    <!--로그인, 가입 버튼-->
+    <h2>Sign Up or Sign In</h2>
+    <!--회원가입 버튼-->
+    <form action="/signup" method="POST">
+      <button type="submit">Sign Up</button>
+    </form>
+    <!--로그인 버튼-->
+    <form action="/signin" method="POST">
+      <button type="submit">Sign In</button>
+    </form>
+    <!--안내말-->
     <h1>Welcome to the Coin Trading Marketplace</h1>
+    <!--코인 가격, 그래프 이거는 채워넣어야 함-->
     <p>Current coin price: <span id="current-price"></span></p>
     <p>Number of available coins: <span id="available-coins"></span></p>
     
-    <h2>Sign Up or Sign In</h2>
-    <form action="/signup" method="POST">
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required>
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required>
-      <button type="submit">Sign Up</button>
-    </form>
-    
-    <form action="/signin" method="POST">
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required>
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required>
-      <button type="submit">Sign In</button>
-    </form>
+
+    <!--판매-->
+    <form action="/sell" method="POST">
+      <label for="amount">Amount of coin :</label>
+      <input type="Number" id="amount" name="amount" required><br>
+      <label for="price">price :</label>
+      <input type="Number" id="price" name="price" required><br><br>
+      <button type="submit">Sell</button>
+    </form>  
+
   </body>
 </html>

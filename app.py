@@ -1,4 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
+import pymongo
+from pymongo import MongoClient
+
+cluster = MongoClient("mongodb+srv://hmku1:gubon00909!K@cluster0.zemkgul.mongodb.net/?retryWrites=true&w=majority")
+db = cluster["software_engineering"]
+selling_post = db['selling_post']
+transacted_post = db['transacted_post']
+user_info = db['user_info']
 
 app = Flask(__name__)
 
@@ -10,17 +18,17 @@ def home():
     return render_template('home.html')
 
 # Sign up page
-@app.route('/signup')
+@app.route('/signup', methods=['POST'])
 def signup():
     return render_template('signup.html')
 
 # Sign in page
-@app.route('/signin')
+@app.route('/signin', methods=['POST'])
 def signin():
     return render_template('signin.html')
 
 # Sign out page
-@app.route('/signout')
+@app.route('/signout', methods=['POST'])
 def signout():
     # TODO: add logic to sign the user out
     return render_template('home.html')
