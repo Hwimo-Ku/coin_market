@@ -3,34 +3,107 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+
     <title>Coin Trading Marketplace</title>
   </head>
   <body>
-    <!--로그인, 가입 버튼-->
-    <h2>Sign Up or Sign In</h2>
-    <!--회원가입 버튼-->
-    <form action="/signup" method="POST">
-      <button type="submit">Sign Up</button>
-    </form>
-    <!--로그인 버튼-->
-    <form action="/signin" method="POST">
-      <button type="submit">Sign In</button>
-    </form>
-    <!--안내말-->
-    <h1>Welcome to the Coin Trading Marketplace</h1>
-    <!--코인 가격, 그래프 이거는 채워넣어야 함-->
-    <p>Current coin price: <span id="current-price"></span></p>
-    <p>Number of available coins: <span id="available-coins"></span></p>
+    <div class="header-container">
+      <h1>'J and K' Coin Trading Marketplace</h1>
+      <h3>{% if user_id %}안녕하세요, {{ user_id }}님{% else %}{% endif %}</h3>
+      <div class="top-right">
+        <!-- Signup button -->
+        <form action="/signup" method="POST">
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+          <script type="text/javascript">
+            alert("{{messages[-1]}}");
+          </script>
+          {% endif %}
+          {% endwith %}
+          <button type="submit">Sign Up</button>
+        </form>
+
+        <!-- Signin button -->
+        <form action="/signin" method="POST">
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+          <script type="text/javascript">
+            alert("{{messages[-1]}}");
+          </script>
+          {% endif %}
+          {% endwith %}
+          <button type="submit">Sign In</button>
+        </form>
+
+        <!-- Signout button -->
+        <form action="/signout" method="POST">
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+          <script type="text/javascript">
+            alert("{{messages[-1]}}");
+          </script>
+          {% endif %}
+          {% endwith %}
+          <button type="submit">Sign out</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="listing-container">
+      <table class="listing-table">
+        <tr class="listing-row">
+          <th class="listing-cell">Seller</th>
+          <th class="listing-cell">Price</th>
+          <th class="listing-cell">Coin Quantity</th>
+          <th class="listing-cell"></th>
+        </tr>
+        {% for post in posts %}
+        <tr class="listing-row">
+          <td class="listing-cell">{{ post['user'] }}</td>
+          <td class="listing-cell">{{ post['price'] }}</td>
+          <td class="listing-cell">{{ post['coin'] }}</td>
+          <td class="listing-cell">
+            <form action="/buy" method="POST">
+              {% with messages = get_flashed_messages() %}
+              {% if messages %}
+              <script type="text/javascript">
+                alert("{{messages[-1]}}");
+              </script>
+              {% endif %}
+              {% endwith %}
+              <input type="hidden" name="post_id" value="{{ post['_id'] }}">
+              <button type="submit" >Buy</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
     
 
-    <!--판매-->
-    <form action="/sell" method="POST">
-      <label for="amount">Amount of coin :</label>
-      <input type="Number" id="amount" name="amount" required><br>
-      <label for="price">price :</label>
-      <input type="Number" id="price" name="price" required><br><br>
-      <button type="submit">Sell</button>
-    </form>  
+    <div class="graph-container">
+      <p>그래프 들어갈 자리~!</p>
+      <!-- Add your graph here -->
+    </div>
+
+    <div class="transaction-container">
+      <h2>Recent Completed Transactions</h2>
+      <table class="transaction-table">
+        <tr class="transaction-row">
+          <th class="transaction-cell">Buyer</th>
+          <th class="transaction-cell">Seller</th>
+          <th class="transaction-cell">Price</th>
+          <th class="transaction-cell">Coin Quantity</th>
+        </tr>
+        <!-- Add your transaction rows here -->
+        <tr class="transaction-row">
+          <td class="transaction-cell">John Doe</td>
+          <td class="transaction-cell">Mike Johnson</td>
+          <td class="transaction-cell">$100</td>
+          <td class="transaction-cell">10</td>
+        </tr>
+      </table>
+    </div>
 
   </body>
 </html>

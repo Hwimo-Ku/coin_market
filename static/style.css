@@ -50,3 +50,78 @@ button {
 button:hover {
     background-color: #0062cc;
 }
+
+
+
+
+
+
+
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .top-right {
+    display: flex;
+  }
+  .top-right form {
+    margin-left: 10px;
+  }
+  .listing-container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    width: 30%; /* Adjust the width as desired */
+    float: right;
+  }
+  .listing-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .listing-row {
+    border-bottom: 1px solid #ccc;
+  }
+  .listing-row:last-child {
+    border-bottom: none;
+  }
+  .listing-cell {
+    padding: 5px;
+    text-align: center;
+  }
+  .listing-cell:first-child {
+    width: 30%;
+  }
+  .listing-cell:last-child {
+    width: 15%;
+    text-align: right;
+  }
+  .button {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .graph-container {
+    /* Add your styles for the graph container */
+    width:65%;
+    height:50%
+  }
+  .transaction-table {
+    width: 30%;
+    border-collapse: collapse;
+    /* Add your styles for the transaction table */
+  }
+  .transaction-row {
+    border-bottom: 1px solid #ccc;
+  }
+  .transaction-row:last-child {
+    border-bottom: none;
+  }
+  .transaction-cell {
+    padding: 5px;
+    text-align: center;
+  }

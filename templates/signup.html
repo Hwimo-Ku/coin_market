@@ -5,15 +5,25 @@
   </head>
   <body>
     <h1>Sign Up</h1>
-    <form action="/signup" method="post">
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username"><br><br>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <script type="text/javascript">
+        alert("{{messages[-1]}}");
+      </script>
+      {% endif %}
+    {% endwith %}
+    <form action="/submit_signup" method="POST">
+      <label for="id">id:</label>
+      <input type="id" id="id" name="id"><br><br>
       <label for="password">Password:</label>
       <input type="password" id="password" name="password"><br><br>
-      <label for="password">check Password:</label>
-      <input type="password" id="password" name="password"><br><br>
+      <label for="check_password">check Password:</label>
+      <input type="password" id="check_password" name="check_password"><br><br>
       <input type="submit" value="Sign Up">
     </form>
-    <p>Already have an account? <a href="/signin">Sign in</a></p>
+    <p>Already have an account?</p>
+    <form action="/signin" method="POST">
+      <button type="submit">Sign in</button>
+    </form>
   </body>
 </html>
