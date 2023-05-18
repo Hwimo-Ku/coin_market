@@ -10,7 +10,25 @@
     <div class="header-container">
       <h1>'J and K' Coin Trading Marketplace</h1>
       <h3>{% if user_id %}안녕하세요, {{ user_id }}님{% else %}{% endif %}</h3>
+      <div class="user-info-container">
+        {% if user_id %}
+        <p>현재 보유한 코인 개수: {{ user_info['coin'] }}</p>
+        <p>현재 보유한 금액: {{ user_info['money'] }}</p>
+        {% endif %}
+      </div>
       <div class="top-right">
+        <!-- mypage button -->
+        <form action="/mypage" method="POST">
+          {% with messages = get_flashed_messages() %}
+          {% if messages %}
+          <script type="text/javascript">
+            alert("{{messages[-1]}}");
+          </script>
+          {% endif %}
+          {% endwith %}
+          <button type="submit">my page</button>
+        </form>
+        
         <!-- Signup button -->
         <form action="/signup" method="POST">
           {% with messages = get_flashed_messages() %}
@@ -49,6 +67,38 @@
       </div>
     </div>
 
+    <div class="container">
+      {% if user_id %}
+        <tr class="listing-row">
+          <td class="listing-cell">
+            <form action="/sell" method="POST">
+              <input type="text" name="coin_quantity" placeholder="코인 개수" required>
+              <input type="text" name="price" placeholder="가격" required>
+              <button type="submit">Sell</button>
+            </form>
+          </td>
+        </tr>
+      {% endif %}
+        <div class="transaction-container">
+          <h2>Recent Completed Transactions</h2>
+          <table class="transaction-table">
+            <tr class="transaction-row">
+              <th class="transaction-cell">Buyer</th>
+              <th class="transaction-cell">Seller</th>
+              <th class="transaction-cell">Price</th>
+              <th class="transaction-cell">Coin Quantity</th>
+            </tr>
+            <!-- Add your transaction rows here -->
+            <tr class="transaction-row">
+              <td class="transaction-cell">John Doe</td>
+              <td class="transaction-cell">Mike Johnson</td>
+              <td class="transaction-cell">$100</td>
+              <td class="transaction-cell">10</td>
+            </tr>
+          </table>
+        </div>
+    </div>
+
     <div class="listing-container">
       <table class="listing-table">
         <tr class="listing-row">
@@ -72,6 +122,7 @@
               {% endif %}
               {% endwith %}
               <input type="hidden" name="post_id" value="{{ post['_id'] }}">
+              <input type="hidden" name="user_id" value="{{ post['user']}}">
               <button type="submit" >Buy</button>
             </form>
           </td>
@@ -79,31 +130,13 @@
         {% endfor %}
       </table>
     </div>
-    
 
     <div class="graph-container">
       <p>그래프 들어갈 자리~!</p>
       <!-- Add your graph here -->
     </div>
 
-    <div class="transaction-container">
-      <h2>Recent Completed Transactions</h2>
-      <table class="transaction-table">
-        <tr class="transaction-row">
-          <th class="transaction-cell">Buyer</th>
-          <th class="transaction-cell">Seller</th>
-          <th class="transaction-cell">Price</th>
-          <th class="transaction-cell">Coin Quantity</th>
-        </tr>
-        <!-- Add your transaction rows here -->
-        <tr class="transaction-row">
-          <td class="transaction-cell">John Doe</td>
-          <td class="transaction-cell">Mike Johnson</td>
-          <td class="transaction-cell">$100</td>
-          <td class="transaction-cell">10</td>
-        </tr>
-      </table>
-    </div>
+
 
   </body>
 </html>

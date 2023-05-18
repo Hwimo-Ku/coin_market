@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>My Page</title>
+  </head>
+  <body>
+    <h1>My Page</h1>
+    <div>
+        <!--홈 버튼-->
+        <form action="/home" method="POST">
+          <button type="submit">Home</button>
+        </form>
+    </div>
+    <div>
+      <!-- Display current user information -->
+      <p>User: {{ user_id }}</p>
+      <p>Coin: {{ user_info['coin'] }}</p>
+      <p>Money: {{ user_info['money'] }}</p>
+    </div>
+    <div>
+      <!-- Withdraw form -->
+      <form action="/withdraw" method="POST">
+        <input type="text" name="withdraw_amount" placeholder="Withdraw Amount" required>
+        <button type="submit" >Withdraw</button>
+        <button type="submit">Add</button>
+      </form>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <script type="text/javascript">
+      alert("{{messages[-1]}}");
+    </script>
+    {% endif %}
+    {% endwith %}
+  </body>
+</html>

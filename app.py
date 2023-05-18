@@ -21,7 +21,8 @@ def home():
     if 'id' in session:
         #여기에 이제 로그인 되어있을 때의 코드
         user_id = session['id']
-        return render_template('home.html', user_id=user_id, posts=posts)
+        user_info_data = user_info.find_one({'id': user_id})
+        return render_template('home.html', user_id=user_id, posts=posts, user_info=user_info_data)
     else:
         #여기에 이제 로그인 안 되어있을 때의 코드
         return render_template('home.html', posts=posts)
@@ -117,6 +118,10 @@ def signout():
 def buy():
     if session.get('id'):
         post_id = request.form.get('post_id')
+        user_id = request.form.get('user_id')
+        if user_id == session['id']:
+            flash('본인 소유의W 코인입니다.')
+            return redirect(url_for('home'))
         post = selling_post.find_one({'_id': ObjectId(post_id)})
         if post:
             buyer_id = session['id']
@@ -125,7 +130,7 @@ def buy():
             
             total_price = int(post['price']) * int(post['coin'])
             
-            if buyer and seller and buyer['money'] >= total_price:
+            if buyer and seller and (buyer['money'] >= total_price):
                 # Update buyer's money and coin
                 user_info.update_one(
                     {'id': buyer_id},
@@ -149,8 +154,42 @@ def buy():
         flash('로그인 후 이용해주세요!')
     return redirect(url_for('home'))
 
-
+#판매
+@app.route('/sell', methods=['GET', 'POST'])
+def sell():
+    if session.get('id'):
+        if request.method == 'POST':
+            coin_quantity = int(request.form['coin_quantity'])
+            price = int(request.form['price'])
+            
+            user = user_info.find_one({'id':session['id']})
+            
+            if coin_quantity <= int(user['coin']):
+                # Create a new post
+                new_post = {
+                    'user': session['id'],
+                    'coin': coin_quantity,
+                    'price': price
+                }
+            
+                # Insert the new post into the selling_post collection
+                selling_post.insert_one(new_post)
+                flash('판매 등록이 완료되었습니다.')
+            else:
+                flash('보유한 코인 수가 부족합니다.')
+            return redirect(url_for('home'))
+    else:
+        flash('로그인 후 이용해주세요!')
+    return redirect(url_for('home'))
+            
+# go to my page
+@app.route('/mypage', methods=['GET','POST'])
+def mypage():
+    if 'id' in session:
+        return render_template('mypage.html')
+    else:
+        flash('로그인 후 사용해주세요!')
+        return redirect(url_for('signin'))
+    
 if __name__ == '__main__':
     app.run(debug=True)
-
-

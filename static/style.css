@@ -125,3 +125,15 @@ button:hover {
     padding: 5px;
     text-align: center;
   }
+  .listing-row1{
+    border-radius: 5px;
+    padding: 10px;
+    width: 30%; /* Adjust the width as desired */
+    float:right;
+  }
+  .container{
+    border-radius: 5px;
+    padding: 10px;
+    width: 30%; /* Adjust the width as desired */
+    float:right;
+  }
