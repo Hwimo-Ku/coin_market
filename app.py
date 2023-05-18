@@ -186,10 +186,52 @@ def sell():
 @app.route('/mypage', methods=['GET','POST'])
 def mypage():
     if 'id' in session:
-        return render_template('mypage.html')
+        user_id = session['id']
+        user_info_data = user_info.find_one({'id':user_id})
+        return render_template('mypage.html', user_id=user_id, user_info=user_info_data)
     else:
         flash('로그인 후 사용해주세요!')
         return redirect(url_for('signin'))
+    
+# Add or Withdraw money
+@app.route('/add_withdraw', methods=['POST'])
+def add_withdraw():
+    if 'id' in session:
+        user_id = session['id']
+        amount = int(request.form['withdraw_amount'])
+
+        user = user_info.find_one({'id': user_id})
+
+        if user:
+            if request.form['action'] == 'Withdraw':
+                if amount <= user['money']:
+                    # Update the user's money
+                    user_info.update_one(
+                        {'id': user_id},
+                        {'$inc': {'money': -amount}}
+                    )
+                    flash('출금이 완료되었습니다.')
+                else:
+                    flash('잔액이 부족합니다.')
+            elif request.form['action'] == 'Add':
+                # Update the user's money
+                user_info.update_one(
+                    {'id': user_id},
+                    {'$inc': {'money': amount}}
+                )
+                flash('입금이 완료되었습니다.')
+            else:
+                flash('올바른 작업이 아닙니다.')
+        else:
+            flash('사용자 정보를 찾을 수 없습니다.')
+    else:
+        flash('로그인 후 이용해주세요!')
+
+    return redirect(url_for('mypage'))
+
+@app.route('/home', methods=['POST'])
+def go_home():
+    return redirect(url_for('home'))
     
 if __name__ == '__main__':
     app.run(debug=True)
