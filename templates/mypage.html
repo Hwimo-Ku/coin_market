@@ -5,6 +5,13 @@
     <title>My Page</title>
   </head>
   <body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <script type="text/javascript">
+      alert("{{messages[-1]}}");
+    </script>
+    {% endif %}
+    {% endwith %}
     <h1>My Page</h1>
     <div>
         <!--홈 버튼-->
@@ -33,12 +40,6 @@
     <button type="submit">Add</button>
   </form>
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <script type="text/javascript">
-      alert("{{messages[-1]}}");
-    </script>
-    {% endif %}
-    {% endwith %}
+
   </body>
 </html>

@@ -18,14 +18,16 @@ app.secret_key = 'secret'
 def home():
     # TODO: add logic to display current coin price and trend
     posts = selling_post.find()
+    transaction_data = transacted_post.find()
     if 'id' in session:
         #여기에 이제 로그인 되어있을 때의 코드
         user_id = session['id']
         user_info_data = user_info.find_one({'id': user_id})
-        return render_template('home.html', user_id=user_id, posts=posts, user_info=user_info_data)
+
+        return render_template('home.html', user_id=user_id, posts=posts, user_info=user_info_data, transactions=transaction_data)
     else:
         #여기에 이제 로그인 안 되어있을 때의 코드
-        return render_template('home.html', posts=posts)
+        return render_template('home.html', posts=posts, transactions=transaction_data)
     
     
 
@@ -112,6 +114,7 @@ def signout():
     else:
         flash('로그인된 상태가 아닙니다.')
         return redirect(url_for('home'))
+        # return '<script>alert("로그인후 사용해주세요");window.loaction.href="/";<script>'
 
 # 구매
 @app.route('/buy', methods=['GET', 'POST'])
@@ -192,7 +195,8 @@ def mypage():
     else:
         flash('로그인 후 사용해주세요!')
         return redirect(url_for('signin'))
-    
+        
+        
 # Add or Withdraw money
 @app.route('/add_withdraw', methods=['POST'])
 def add_withdraw():

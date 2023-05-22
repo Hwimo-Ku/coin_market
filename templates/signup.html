@@ -4,14 +4,15 @@
     <title>Sign Up</title>
   </head>
   <body>
-    <h1>Sign Up</h1>
     {% with messages = get_flashed_messages() %}
-      {% if messages %}
-      <script type="text/javascript">
-        alert("{{messages[-1]}}");
-      </script>
-      {% endif %}
+    {% if messages %}
+    <script type="text/javascript">
+      alert("{{messages[-1]}}");
+    </script>
+    {% endif %}
     {% endwith %}
+    <h1>Sign Up</h1>
+
     <form action="/submit_signup" method="POST">
       <label for="id">id:</label>
       <input type="id" id="id" name="id"><br><br>
