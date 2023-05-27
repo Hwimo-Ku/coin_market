@@ -155,74 +155,14 @@ button:hover {
     }
   }
 
-
-
-#box3, #box2, #box1 {
-  margin:10px;
-}
-
-#box3 {
-  flex-grow: 1;
-}
-
-#box2 {
-  flex-grow: 4;
-}
-
-#box1 {
-  flex-grow: 2;
-}
-
-
-
-.listing-container {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.listing-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.listing-row {
-  border-bottom: 1px solid #ccc;
-}
-
-.listing-row:last-child {
-  border-bottom: none;
-}
-
-.listing-cell {
-  padding: 5px;
-  text-align: center;
-}
-
-.listing-cell:first-child {
-  width: 30%;
-  text-align: left;
-}
-
-.listing-cell:last-child {
-  width: 15%;
-  text-align: right;
+main {
+display: flex;
+justify-content: center;
+align-items: top;
+height: 100vh;
 }
 
 .vertical-container{
-  display:flex;
-  flex-direction: column;
-}
-.horizontal-container{
-  display:flex;
-  flex-direction: row;
-}
-.marketplace-buy {
-  display: inline-block;
-  margin-right: 10px;
-}
-.horizontal-form{
-  display:flex;
-}
+    display:flex;
+    flex-direction: column;
+  }

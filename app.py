@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 import pymongo
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from datetime import datetime
 
 cluster = MongoClient("mongodb+srv://hmku1:gubon00909!K@cluster0.zemkgul.mongodb.net/?retryWrites=true&w=majority")
 db = cluster["software_engineering"]
@@ -9,6 +10,7 @@ db = cluster["software_engineering"]
 selling_post = db['selling_post']
 transacted_post = db['transacted_post']
 user_info = db['user_info']
+market_data = db['market_data']
 
 app = Flask(__name__)
 app.secret_key = 'secret'
@@ -19,15 +21,29 @@ def home():
     # TODO: add logic to display current coin price and trend
     posts = selling_post.find()
     transaction_data = transacted_post.find()
+    
+    market_coin = market_data.find_one({'user' : 'marketplace'})
+    
+    
+    # recent transition
+    recent_transitions = list(transacted_post.find().sort('_id', -1).limit(10))
+    recent_transitions_serializable = []
+    for transition in recent_transitions:
+        recent_transitions_serializable.append({
+            'coin': transition['coin'],
+            'price': transition['price'],
+            'timestamp':transition['timestamp']
+        })
+    
     if 'id' in session:
         #여기에 이제 로그인 되어있을 때의 코드
         user_id = session['id']
         user_info_data = user_info.find_one({'id': user_id})
 
-        return render_template('home.html', user_id=user_id, posts=posts, user_info=user_info_data, transactions=transaction_data)
+        return render_template('home.html', user_id=user_id, posts=posts, user_info=user_info_data, transactions=transaction_data, recent_transitions=recent_transitions_serializable, market=market_coin)
     else:
         #여기에 이제 로그인 안 되어있을 때의 코드
-        return render_template('home.html', posts=posts, transactions=transaction_data)
+        return render_template('home.html', posts=posts, transactions=transaction_data, recent_transitions=recent_transitions_serializable, market=market_coin)
     
     
 
@@ -108,14 +124,58 @@ def submit_signin():
 def signout():
     if 'id' in session:
         session.pop('id', None)
-        # TODO: add logic to sign the user out
         flash('로그 아웃 완료!')
         return redirect(url_for('home'))
     else:
         flash('로그인된 상태가 아닙니다.')
         return redirect(url_for('home'))
-        # return '<script>alert("로그인후 사용해주세요");window.loaction.href="/";<script>'
 
+
+# market coin 구매
+@app.route('/buy_market_coin', methods=['GET', 'POST'])
+def buy_market_coin():
+    if session.get('id'):
+        market_coin = market_data.find_one({'user' : 'marketplace'})
+        if market_coin:
+            buyer_id = session['id']
+            buyer = user_info.find_one({'id': buyer_id})
+            
+            amount = int(request.form['amount'])
+            total_price = int(market_coin['price']) * amount
+            
+            if amount <= market_coin['coin']:
+                if buyer and (buyer['money'] >= total_price):
+                    # Update buyer's money and coin
+                    user_info.update_one(
+                        {'id': buyer_id},
+                        {'$inc': {'money': -total_price, 'coin': amount}}
+                    )
+                    # Update market's coin
+                    market_data.update_one(
+                        {'user': "marketplace"},
+                        {'$inc': {'coin': -amount}}
+                    )
+                    # Add transaction to transacted_post collection
+                    transacted_time = datetime.now()
+                    transacted_time_iso = transacted_time.isoformat()
+                    transaction = {
+                        'user': buyer_id,
+                        'coin': amount,
+                        'price': 100,
+                        'timestamp':transacted_time_iso
+                    }
+                    transacted_post.insert_one(transaction)
+                    flash('구매가 완료되었습니다.')
+                else:
+                    flash('잔액이 부족하거나 사용자 정보를 찾을 수 없습니다.')
+            else:
+                flash('입력한 개수가 잔여량보다 많습니다.')
+        else:
+            flash('존재하지 않는 게시물입니다.')
+    else:
+        flash('로그인 후 이용해주세요!')
+    return redirect(url_for('home'))
+    
 # 구매
 @app.route('/buy', methods=['GET', 'POST'])
 def buy():
@@ -123,7 +183,7 @@ def buy():
         post_id = request.form.get('post_id')
         user_id = request.form.get('user_id')
         if user_id == session['id']:
-            flash('본인 소유의W 코인입니다.')
+            flash('본인 소유의 코인입니다.')
             return redirect(url_for('home'))
         post = selling_post.find_one({'_id': ObjectId(post_id)})
         if post:
@@ -145,7 +205,15 @@ def buy():
                     {'$inc': {'money': total_price, 'coin': int(-post['coin'])}}
                 )
                 # Add transaction to transacted_post collection
-                transacted_post.insert_one(post)
+                transacted_time = datetime.now()
+                transacted_time_iso = transacted_time.isoformat()
+                transaction = {
+                    'user':buyer_id,
+                    'coin':post['coin'],
+                    'price':post['price'],
+                    'timestamp':transacted_time_iso
+                }
+                transacted_post.insert_one(transaction)
                 # Delete the post from selling_post collection
                 selling_post.delete_one({'_id': ObjectId(post_id)})
                 flash('구매가 완료되었습니다.')
@@ -167,12 +235,16 @@ def sell():
             
             user = user_info.find_one({'id':session['id']})
             
+            transacted_time = datetime.now()
+            transacted_time_iso = transacted_time.isoformat()
+            
             if coin_quantity <= int(user['coin']):
                 # Create a new post
                 new_post = {
                     'user': session['id'],
                     'coin': coin_quantity,
-                    'price': price
+                    'price': price,
+                    'timestamp':transacted_time_iso
                 }
             
                 # Insert the new post into the selling_post collection

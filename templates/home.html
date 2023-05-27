@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js 라이브러리 로드 -->
     <title>Coin Trading Marketplace</title>
   </head>
   <body>
@@ -14,149 +14,193 @@
       </script>
     {% endif %}
     {% endwith %}
-    <div class="header-container">
-      <h1>'J and K' Coin Trading Marketplace</h1>
-      <h3>{% if user_id %}안녕하세요, {{ user_id }}님{% else %}{% endif %}</h3>
-      <div class="user-info-container">
-        {% if user_id %}
-        <p>현재 보유한 코인 개수: {{ user_id['coin'] }}</p>
-        <p>현재 보유한 금액: {{ user_id['money'] }}</p>
-        {% endif %}
+    
+    <header>
+      <div class="header-container">
+        <p>'J and K' Coin Trading market</p>
+
+        <div class="header-container">
+          <h3 class="greeting">{% if user_id %}안녕하세요, {{ user_id }}님{% else %}{% endif %}</h3>
+          <div class="user-info-container">
+            {% if user_info %}
+            <p>현재 보유한 코인 개수: {{ user_info['coin'] }}</p>
+            <p>현재 보유한 금액: {{ user_info['money'] }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="top-right">
+          {% if user_id %}
+          <!-- mypage button -->
+          <form action="/mypage" method="POST">
+            <button type="submit">my page</button>
+          </form>
+          <!-- Signout button -->
+          <form action="/signout" method="POST">
+            <button type="submit">Sign out</button>
+          </form>
+
+          {% endif %}
+
+          {%if not user_id %}        
+          <!-- Signup button -->
+          <form action="/signup" method="POST">
+            <button type="submit">Sign Up</button>
+          </form>
+          <!-- Signin button -->
+          <form action="/signin" method="POST">
+            <button type="submit">Sign In</button>
+          </form>
+          {% endif %}
+    
+          
+        </div>
       </div>
-      <div class="top-right">
-        <!-- mypage button -->
-        <form action="/mypage" method="POST">
-          <button type="submit">my page</button>
-        </form>
+    </header>
+    
+    <main>
+      <div class="horizontal-container">
+        <div id = "box1">
+          <h4>Recent Transactions</h4>
+          <table class="transaction-table">
+            <tr class="transaction-row">
+              <th class="transaction-cell">Price per coin</th>
+              <th class="transaction-cell">Coin Quantity</th>
+            </tr>
+
+            
+            {% for post in recent_transitions %}
+            <tr class="transaction-row">
+              <td class="transaction-cell">{{ post.price }}</td>
+              <td class="transaction-cell">{{ post.coin }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+
+        <div id = "box2">
+          <div>
+            <canvas id="transactionChart"></canvas>
+          </div>
+        </div>
+  
+        <script>
+          // Retrieve the transaction data from the server
+          const transactions = JSON.parse('{{ recent_transitions | tojson | safe }}');
         
-        <!-- Signup button -->
-        <form action="/signup" method="POST">
-          <button type="submit">Sign Up</button>
-        </form>
-
-        <!-- Signin button -->
-        <form action="/signin" method="POST">
-          <button type="submit">Sign In</button>
-        </form>
-
-        <!-- Signout button -->
-        <form action="/signout" method="POST">
-          <button type="submit">Sign out</button>
-        </form>
-      </div>
-    </div>
-
-    <div class="container">
-      {% if user_id %}
-        <tr class="listing-row">
-          <td class="listing-cell">
-            <form action="/sell" method="POST">
-              <input type="text" name="coin_quantity" placeholder="코인 개수" required>
-              <input type="text" name="price" placeholder="가격" required>
-              <button type="submit">Sell</button>
-            </form>
-          </td>
-        </tr>
-      {% endif %}
-      <div class="transaction-container">
-        <h2>Recent Completed Transactions</h2>
-        <table class="transaction-table">
-          <tr class="transaction-row">
-            <th class="transaction-cell">Price</th>
-            <th class="transaction-cell">Coin Quantity</th>
-          </tr>
-          {% for post in transactions %}
-          <tr class="transaction-row">
-            <td class="transaction-cell">{{ post.price }}</td>
-            <td class="transaction-cell">{{ post.coin }}</td>
-          </tr>
-          {% endfor %}
-        </table>
-      </div>
-      
-    </div>
-
-    <div class="listing-container">
-      <table class="listing-table">
-        <tr class="listing-row">
-          <th class="listing-cell">Seller</th>
-          <th class="listing-cell">Price</th>
-          <th class="listing-cell">Coin Quantity</th>
-          <th class="listing-cell"></th>
-        </tr>
-        {% for post in posts %}
-        <tr class="listing-row">
-          <td class="listing-cell">{{ post['user'] }}</td>
-          <td class="listing-cell">{{ post['price'] }}</td>
-          <td class="listing-cell">{{ post['coin'] }}</td>
-          <td class="listing-cell">
-            <form action="/buy" method="POST">
-              <input type="hidden" name="post_id" value="{{ post['_id'] }}">
-              <input type="hidden" name="user_id" value="{{ post['user']}}">
-              <button type="submit" >Buy</button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-    </div>
-
-    <div class="graph-container">
-      <canvas id="transaction-chart"></canvas>
-    </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-      // 거래 데이터 가져오기
-      const transactions = [
-        {% for post in transactions %}
-        {
-          order: {{ post.order }},
-          price: {{ post.price }}
-        },
-        {% endfor %}
-      ];
-    
-      // 최소값과 최대값 계산
-      const minPrice = Math.min(...transactions.map(transaction => transaction.price));
-      const maxPrice = Math.max(...transactions.map(transaction => transaction.price));
-    
-      // 거래 데이터를 기반으로 그래프 그리기
-      const ctx = document.getElementById('transaction-chart').getContext('2d');
-      const chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: transactions.map(transaction => transaction.order),
-          datasets: [{
-            label: 'Price',
-            data: transactions.map(transaction => transaction.price),
-            borderColor: 'rgb(75, 192, 192)',
-            tension: 0.1
-          }]
-        },
-        options: {
-          scales: {
-            x: {
-              title: {
-                display: true,
-                text: '순서'
-              }
-            },
-            y: {
-              title: {
-                display: true,
-                text: '가격'
+          // Extract the relevant data for the chart
+          const labels = transactions
+            .map(transaction => transaction.timestamp)
+            .slice(-10) // Get the last 10 elements
+            .reverse(); // Reverse the array
+        
+          const prices = transactions
+            .map(transaction => transaction.price)
+            .slice(-10) // Get the last 10 elements
+            .reverse(); // Reverse the array
+        
+          console.log('Labels:', labels);
+          console.log('Prices:', prices);
+        
+          // Create the chart after the DOM is fully loaded
+          document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('transactionChart').getContext('2d');
+            new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels: labels.map(date => new Date(date).toLocaleString('ko-KR', {month: 'numeric', day:'numeric',hour:'numeric', minute:'numeric'})),
+                datasets: [
+                  {
+                    label: 'Coin Price',
+                    data: prices,
+                    borderColor: 'red',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1,
+                    pointLabel: prices, // Display the y-axis value at each data point
+                  }
+                ]
               },
-              min: minPrice,
-              max: maxPrice
-            }
-          }
-        }
-      });
-    </script>
-    
-    
+              options: {
+                responsive: true,
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    ticks: {
+                      callback: function (value, index, values) {
+                        return value.toFixed(2); // Format the y-axis values to two decimal places
+                      }
+                    }
+                  }
+                }
+              }
+            });
+          });
+        </script>
 
+        <div id = "box3">
+          <div class="vertical-container">
+            <div>
+              {% if user_id %}
+                <tr class="listing-row">
+                  <td class="listing-cell">
+                    <form action="/sell" method="POST">
+                      <input type="text" name="coin_quantity" placeholder="코인 개수" required>
+                      <input type="text" name="price" placeholder="가격" required>
+                      <button type="submit">Sell</button>
+                    </form>
+                  </td>
+                </tr>
+              {% endif %}
+            </div>
+            <div>
+              <div class="listing-container">
+                <table class="listing-table">
+                  <tr class="listing-row">
+                    <th class="listing-cell">Seller</th>
+                    <th class="listing-cell">Price per coin</th>
+                    <th class="listing-cell">Coin Quantity</th>
+                    <th class="listing-cell"></th>
+                  </tr>
+                  
+                  {% if market['coin'] > 0 %}
+                  <tr class="listing-row">
+                    <td class="listing-cell">{{ market['user'] }}</td>
+                    <td class="listing-cell">{{ market['price'] }}</td>
+                    <td class="listing-cell">{{ market['coin'] }}</td>
+                    <td class="listing-cell">
+                      <form class="horizontal-form" action="/buy_market_coin" method="POST">
+                        <input class="marketplace-buy" type="text" name="amount" placeholder="amount of coin">
+                        <button type="submit" >Buy</button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% endif %}
+
+                  {% for post in posts %}
+                  <tr class="listing-row">
+                    <td class="listing-cell">{{ post['user'] }}</td>
+                    <td class="listing-cell">{{ post['price'] }}</td>
+                    <td class="listing-cell">{{ post['coin'] }}</td>
+                    <td class="listing-cell">
+                      <form action="/buy" method="POST">
+                        <input type="hidden" name="post_id" value="{{ post['_id'] }}">
+                        <input type="hidden" name="user_id" value="{{ post['user']}}">
+                        <button type="submit" >Buy</button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        
+      </div>
+
+      
+    </main>
 
 
   </body>

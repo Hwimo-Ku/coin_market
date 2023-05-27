@@ -2,10 +2,10 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{url_for('static', filename='signupin.css')}}">
     <title>Coin Trading Marketplace - Sign In</title>
   </head>
   <body>
-    <h1>Sign In</h1>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <script type="text/javascript">
@@ -13,17 +13,40 @@
     </script>
     {% endif %}
   {% endwith %}
-    <form action="/submit_signin" method="POST">
-      <label for="id">id:</label>
-      <input type="id" id="id" name="id" required><br>
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required><br><br>
-      <button type="submit">Sign In</button>
-    </form>
 
-    <p>you need an account?</p>
-    <form action="/signup" method="POST">
-      <button type="submit">Sign Up</button>
-    </form>
+    <header>
+      <div class="header-container">
+        <h2>Sign in</h2>
+
+        <div class="top-right">
+          <!--홈 버튼-->
+          <form action="/home" method="POST">
+            <button type="submit">Home</button>
+          </form>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="vertical-container">
+        <div>
+          <form action="/submit_signin" method="POST">
+            <label for="id">id:</label>
+            <input type="id" id="id" name="id" required><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+            <button type="submit">Sign In</button>
+          </form>
+        </div>
+        <br><br><br><br><br><br><br><br>
+        <div>
+          <p>you need an account?</p>
+          <form action="/signup" method="POST">
+            <button type="submit">Sign Up</button>
+          </form>
+        </div>
+      </div>
+      
+    </main>
   </body>
 </html>

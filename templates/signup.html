@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
     <title>Sign Up</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='signupin.css')}}">
   </head>
   <body>
     {% with messages = get_flashed_messages() %}
@@ -11,20 +13,51 @@
     </script>
     {% endif %}
     {% endwith %}
-    <h1>Sign Up</h1>
 
-    <form action="/submit_signup" method="POST">
-      <label for="id">id:</label>
-      <input type="id" id="id" name="id"><br><br>
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password"><br><br>
-      <label for="check_password">check Password:</label>
-      <input type="password" id="check_password" name="check_password"><br><br>
-      <input type="submit" value="Sign Up">
-    </form>
-    <p>Already have an account?</p>
-    <form action="/signin" method="POST">
-      <button type="submit">Sign in</button>
-    </form>
+    <header>
+      <div class="header-container">
+        <h2>Sign up</h2>
+  
+        <div class="top-right">
+  
+          <!--홈 버튼-->
+          <form action="/home" method="POST">
+            <button type="submit">Home</button>
+          </form>
+        </div>
+      </div>
+    </header>
+
+
+    <main>
+      <div class="vertical-container">
+        <div>
+          <form action="/submit_signup" method="POST">
+            <label for="id">id:</label>
+            <input type="id" id="id" name="id"><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password"><br><br>
+            <label for="check_password">check Password:</label>
+            <input type="password" id="check_password" name="check_password"><br><br>
+            <button type="submit" value="Sign Up">Sign up</button>
+          </form>
+        </div>
+        <br><br><br><br><br><br><br><br>
+        <div>
+          <p>Already have an account?</p>
+          <form action="/signin" method="POST">
+            <button type="submit">Sign in</button>
+          </form>
+        </div>
+      </div>
+      
+    </main>
+
+
+
+
+
+
+    
   </body>
 </html>
