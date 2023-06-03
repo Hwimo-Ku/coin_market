@@ -35,12 +35,22 @@ def home():
             'timestamp':transition['timestamp']
         })
     
+    # my recent transition
+    # my_recent_transitions_serializable = []
+    # for transition in my_recent_transitions:
+    #     my_recent_transitions_serializable.append({
+    #         'coin': transition['coin'],
+    #         'price': transition['price'],
+    #         'timestamp':transition['timestamp']
+    #     })
+    
     if 'id' in session:
         #여기에 이제 로그인 되어있을 때의 코드
         user_id = session['id']
         user_info_data = user_info.find_one({'id': user_id})
+        my_recent_transitions = list(selling_post.find({'user':session['id']}))
 
-        return render_template('home.html', user_id=user_id, posts=posts, user_info=user_info_data, transactions=transaction_data, recent_transitions=recent_transitions_serializable, market=market_coin)
+        return render_template('home.html', user_id=user_id, posts=posts, user_info=user_info_data, transactions=transaction_data, recent_transitions=recent_transitions_serializable, market=market_coin, my_recent_transitions=my_recent_transitions)
     else:
         #여기에 이제 로그인 안 되어있을 때의 코드
         return render_template('home.html', posts=posts, transactions=transaction_data, recent_transitions=recent_transitions_serializable, market=market_coin)
@@ -194,29 +204,33 @@ def buy():
             total_price = int(post['price']) * int(post['coin'])
             
             if buyer and seller and (buyer['money'] >= total_price):
-                # Update buyer's money and coin
-                user_info.update_one(
-                    {'id': buyer_id},
-                    {'$inc': {'money': -total_price, 'coin': int(post['coin'])}}
-                )
-                # Update seller's money and coin
-                user_info.update_one(
-                    {'id': post['user']},
-                    {'$inc': {'money': total_price, 'coin': int(-post['coin'])}}
-                )
-                # Add transaction to transacted_post collection
-                transacted_time = datetime.now()
-                transacted_time_iso = transacted_time.isoformat()
-                transaction = {
-                    'user':buyer_id,
-                    'coin':post['coin'],
-                    'price':post['price'],
-                    'timestamp':transacted_time_iso
-                }
-                transacted_post.insert_one(transaction)
-                # Delete the post from selling_post collection
-                selling_post.delete_one({'_id': ObjectId(post_id)})
-                flash('구매가 완료되었습니다.')
+                if seller['coin'] >= int(post['coin']):
+                    # Update buyer's money and coin
+                    user_info.update_one(
+                        {'id': buyer_id},
+                        {'$inc': {'money': -total_price, 'coin': int(post['coin'])}}
+                    )
+                    # Update seller's money and coin
+                    user_info.update_one(
+                        {'id': post['user']},
+                        {'$inc': {'money': total_price, 'coin': int(-post['coin'])}}
+                    )
+                    # Add transaction to transacted_post collection
+                    transacted_time = datetime.now()
+                    transacted_time_iso = transacted_time.isoformat()
+                    transaction = {
+                        'user':buyer_id,
+                        'coin':post['coin'],
+                        'price':post['price'],
+                        'timestamp':transacted_time_iso
+                    }
+                    transacted_post.insert_one(transaction)
+                    # Delete the post from selling_post collection
+                    selling_post.delete_one({'_id': ObjectId(post_id)})
+                    flash('구매가 완료되었습니다.')
+                else:
+                    selling_post.delete_one({'_id': ObjectId(post_id)})
+                    flash('판매자의 코인이 부족합니다.')
             else:
                 flash('잔액이 부족하거나 사용자 정보를 찾을 수 없습니다.')
         else:
@@ -257,6 +271,21 @@ def sell():
         flash('로그인 후 이용해주세요!')
     return redirect(url_for('home'))
             
+# Delete post
+@app.route('/delete', methods=['POST'])
+def delete_post():
+    if session.get('id'):
+        post_id = request.form.get('post_id')
+        user_id = request.form.get('user_id')
+        if user_id == session['id']:
+            selling_post.delete_one({'_id': ObjectId(post_id)})
+            flash('게시물이 삭제되었습니다.')
+        else:
+            flash('삭제 권한이 없습니다.')
+    else:
+        flash('로그인 후 이용해주세요!')
+    return redirect(url_for('home'))           
+
 # go to my page
 @app.route('/mypage', methods=['GET','POST'])
 def mypage():

@@ -1,17 +1,28 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
+    background-color: #000000;
     margin: 0;
     padding: 0;
+    position: relative;
+  min-height: 100vh;
 }
 
 header {
-    background-color: #3b42c7;
+    background-color: #000000;
     color: #fff;
     padding: 20px;
     text-align: center;
 }
 
+footer {
+  position:relative;
+  bottom: 0;
+  width: 100%;
+  background-color: #000000; /* 원하는 색상으로 변경하세요 */
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+}
 
   
 h1{
@@ -110,9 +121,13 @@ button:hover {
     cursor: pointer;
   }
   .transaction-table {
-    width: 30%;
+    width: 95%;
+    margin-bottom: 2%;
     border-collapse: collapse;
+    background-color: #82bffc;
     /* Add your styles for the transaction table */
+    flex-grow:1;
+    
   }
   .transaction-row {
     border-bottom: 1px solid #ccc;
@@ -126,6 +141,7 @@ button:hover {
   }
   .transaction-chart{
     width:30%;
+    
   }
   .listing-row1{
     border-radius: 5px;
@@ -157,8 +173,33 @@ button:hover {
 
 
 
-#box3, #box2, #box1 {
+#box3 {
   margin:10px;
+  background-color: rgb(179, 207, 231);
+  border-radius: 5px;
+  border:1px solid #ccc;
+  text-align: center;
+}
+
+#box2{
+  margin:10px;
+  background-color: rgb(179, 207, 231);
+  border-radius: 5px;
+  border:1px solid #ccc;
+  align-items: center;
+  text-align: center;
+}
+#box1{
+  margin:10px;
+  background-color: rgb(179, 207, 231);
+
+  flex-grow:2;
+  display : flex;
+  align-items:center;
+  flex-direction: column;
+
+  border-radius: 5px;
+  border:1px solid #ccc
 }
 
 #box3 {
@@ -170,7 +211,7 @@ button:hover {
 }
 
 #box1 {
-  flex-grow: 2;
+  flex-grow: 1;
 }
 
 
@@ -225,4 +266,38 @@ button:hover {
 }
 .horizontal-form{
   display:flex;
+}
+
+.delete-button {
+  background-color: #ff0000;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  width:120%;
+}
+
+.buy-button {
+  background-color: #12d400;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.header-container_mini {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+
+  margin:10px;
+  background-color: #007bff;
+  border-radius: 5px;
+  border:1px solid #ccc
+  
 }

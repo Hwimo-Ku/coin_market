@@ -19,15 +19,16 @@
       <div class="header-container">
         <p>'J and K' Coin Trading market</p>
 
-        <div class="header-container">
+        {% if user_info %}
+        <div class="header-container_mini">
           <h3 class="greeting">{% if user_id %}안녕하세요, {{ user_id }}님{% else %}{% endif %}</h3>
           <div class="user-info-container">
-            {% if user_info %}
-            <p>현재 보유한 코인 개수: {{ user_info['coin'] }}</p>
-            <p>현재 보유한 금액: {{ user_info['money'] }}</p>
-            {% endif %}
+            <p>보유 코인 : {{ user_info['coin'] }}</p>
+            <p>보유 금액 : {{ user_info['money'] }}</p>
           </div>
         </div>
+        {% endif %}
+
 
         <div class="top-right">
           {% if user_id %}
@@ -76,10 +77,39 @@
             </tr>
             {% endfor %}
           </table>
+          {% if user_id %}
+          <h4>my Recent Transactions</h4>
+          <table class="transaction-table">
+            <tr class="listing-row">
+              <th class="listing-cell">Price per coin</th>
+              <th class="listing-cell">Coin Quantity</th>
+              <th class="listing-cell"></th>
+            </tr>
+
+            {% for post in my_recent_transitions %}
+            <tr class="listing-row">
+              <td class="listing-cell">{{ post['price'] }}</td>
+              <td class="listing-cell">{{ post['coin'] }}</td>
+              <td class="listing-cell">
+                <form action="/delete" method="POST">
+                  <input type="hidden" name="post_id" value="{{ post['_id'] }}">
+                  <input type="hidden" name="user_id" value="{{ post['user']}}">
+                  <button class="delete-button" type="submit" >delete</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+                
+          </table>
+          {% endif %}
+
+          
         </div>
 
         <div id = "box2">
+          <h3 style="display:inline-block">Recent transaction chart</h3>
           <div>
+            <br>
             <canvas id="transactionChart"></canvas>
           </div>
         </div>
@@ -144,8 +174,8 @@
                 <tr class="listing-row">
                   <td class="listing-cell">
                     <form action="/sell" method="POST">
-                      <input type="text" name="coin_quantity" placeholder="코인 개수" required>
-                      <input type="text" name="price" placeholder="가격" required>
+                      <input type="text" name="coin_quantity" placeholder="코인 개수" style="height: 30px; border-radius:5px" required>
+                      <input type="text" name="price" placeholder="가격" style="height: 30px; border-radius:5px" required>
                       <button type="submit">Sell</button>
                     </form>
                   </td>
@@ -154,7 +184,7 @@
             </div>
             <div>
               <div class="listing-container">
-                <table class="listing-table">
+                <table class="transaction-table">
                   <tr class="listing-row">
                     <th class="listing-cell">Seller</th>
                     <th class="listing-cell">Price per coin</th>
@@ -169,8 +199,8 @@
                     <td class="listing-cell">{{ market['coin'] }}</td>
                     <td class="listing-cell">
                       <form class="horizontal-form" action="/buy_market_coin" method="POST">
-                        <input class="marketplace-buy" type="text" name="amount" placeholder="amount of coin">
-                        <button type="submit" >Buy</button>
+                        <input class="marketplace-buy" type="text" name="amount" placeholder="amount" style="border-radius:5px; width:50px" required>
+                        <button class="buy-button" type="submit" >Buy</button>
                       </form>
                     </td>
                   </tr>
@@ -185,7 +215,7 @@
                       <form action="/buy" method="POST">
                         <input type="hidden" name="post_id" value="{{ post['_id'] }}">
                         <input type="hidden" name="user_id" value="{{ post['user']}}">
-                        <button type="submit" >Buy</button>
+                        <button class="buy-button" type="submit" >Buy</button>
                       </form>
                     </td>
                   </tr>
@@ -201,6 +231,11 @@
 
       
     </main>
+    <footer>
+      <div class="footer-container">
+        <p>© 2023 Coin Trading Marketplace. All rights reserved.</p>
+      </div>
+    </footer>
 
 
   </body>

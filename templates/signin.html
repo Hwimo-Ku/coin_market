@@ -29,9 +29,9 @@
 
     <main>
       <div class="vertical-container">
-        <div>
-          <form action="/submit_signin" method="POST">
-            <label for="id">id:</label>
+        <div class="form-container">
+          <form action="/submit_signin" method="POST" style="text-align:right">
+            <label for="id">ID:</label>
             <input type="id" id="id" name="id" required><br><br>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br><br>
@@ -39,8 +39,8 @@
           </form>
         </div>
         <br><br><br><br><br><br><br><br>
-        <div>
-          <p>you need an account?</p>
+        <div class="signup-container" style="display: flex; flex-direction:column; justify-content: center; align-items: center; text-align: center;">
+          <p>Don't have an account?</p>
           <form action="/signup" method="POST">
             <button type="submit">Sign Up</button>
           </form>
@@ -48,5 +48,10 @@
       </div>
       
     </main>
+    <footer>
+      <div class="footer-container">
+        <p>© 2023 Coin Trading Marketplace. All rights reserved.</p>
+      </div>
+    </footer>
   </body>
 </html>

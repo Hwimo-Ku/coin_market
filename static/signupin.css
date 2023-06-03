@@ -6,7 +6,7 @@ body {
 }
 
 header {
-    background-color: #3b42c7;
+    background-color: #000000;
     color: #fff;
     padding: 20px;
     text-align: center;
@@ -159,10 +159,127 @@ main {
 display: flex;
 justify-content: center;
 align-items: top;
-height: 100vh;
+height: 70vh;
 }
 
 .vertical-container{
     display:flex;
     flex-direction: column;
   }
+
+footer {
+  position:relative;
+  bottom: 0;
+  width: 100%;
+  background-color: #000000; /* 원하는 색상으로 변경하세요 */
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+}
+
+/* 전체 페이지 스타일 */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+/* 헤더 스타일 */
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+h2 {
+  margin: 0;
+}
+
+/* 메인 컨테이너 스타일 */
+main {
+  padding: 20px;
+}
+
+.vertical-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.form-container {
+  display: flex;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.form-container1{
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.form-container2 form label,
+.form-container2 form label{
+  margin-bottom: 10px;
+}
+
+
+.signin-container {
+  margin-top: 20px;
+}
+
+/* 푸터 스타일 */
+footer {
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: center;
+}
+
+/* 버튼 스타일 */
+button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0069d9;
+}
+
+/* 입력 필드 스타일 */
+input[type="id"],
+input[type="password"] {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 200px;
+}
+
+label {
+  font-weight: bold;
+}
+
+.mypage_box{
+  background-color: #ccc;
+  border-radius: 5px;
+  margin: 10px;
+  padding:10px;
+}
